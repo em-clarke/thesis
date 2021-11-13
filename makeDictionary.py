@@ -1,47 +1,31 @@
 from gensimModel import model
 
-COCA = {}
-COCA_temp = {}
+def main():
+  masterList = {}
+  masterList_temp = {}
 
-with open("words_219k_trimmed1.txt") as file, open("ScrabbleWords2019.txt") as file2:
-  for line in file:
-    (word, freq) = line.split()
-    freq = int(freq)
-    if freq > 300 and len(word) >= 4 and len(word) <= 10:
-      COCA_temp[word] = freq
+  with open("words_219k_trimmed1.txt") as file, open("ScrabbleWords2019.txt") as file2:
+    for line in file:
+      (word, freq) = line.split()
+      freq = int(freq)
+      if freq > 300 and len(word) >= 4 and len(word) <= 10:
+        masterList_temp[word] = freq
 
-  for line in file2:
-    s_word = line.lower().strip()
-    if s_word in COCA_temp:
-      COCA[s_word] = COCA_temp[s_word]
+    for line in file2:
+      s_word = line.lower().strip()
+      if s_word in masterList_temp:
+        masterList[s_word] = masterList_temp[s_word]
 
-
-def getDictVector(dictionary: set) -> dict:
-  vectorDict = dict()
-  noVectData = set()
-  for word in dictionary:
+  for word in list(masterList.keys()):
     try:
       vect = model.get_vector(word)
-      vectorDict[word] = vect
     except KeyError:
-      noVectData.add(word)
-      print(word)
-  return vectorDict
+      del masterList[word]
 
-def getNoVectorDataWords(dictionary: set) -> set:
-  vectorDict = dict()
-  noVectData = set()
-  for word in dictionary:
-    try:
-      vect = model.get_vector(word)
-      vectorDict[word] = vect
-    except KeyError:
-      noVectData.add(word)
- #     print(word)
-  return noVectData
+  with open("masterDict.txt", "w") as file:
+    for word,freq in masterList.items():
+      file.write(f'{word} {freq}\n', )
 
-badWords = getNoVectorDataWords(COCA)
-COCAvects = getDictVector(COCA)
-for word in badWords:
-  del COCA[word]
 
+if __name__ == "__main__":
+    main()
