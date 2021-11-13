@@ -4,7 +4,7 @@ def main():
   masterList = {}
   masterList_temp = {}
 
-  with open("words_219k_trimmed1.txt") as file, open("ScrabbleWords2019.txt") as file2:
+  with open("data/words_219k_trimmed1.txt") as file, open("data/ScrabbleWords2019.txt") as file2:
     for line in file:
       (word, freq) = line.split()
       freq = int(freq)
@@ -22,7 +22,7 @@ def main():
     except KeyError:
       del masterList[word]
 
-  with open("masterDict.txt", "w") as file:
+  with open("data/masterDict.txt", "w") as file:
     for word,freq in masterList.items():
       file.write(f'{word} {freq}\n', )
 
